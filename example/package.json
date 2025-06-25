@@ -3,27 +3,30 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "clean": "yarn clean_native_builds && yarn clean_react_native && yarn clean_node_modules",
-    "clean_native_builds": "rm -rf ios/build/* && rm -rf android/build/*",
-    "clean_react_native": "rm -rf $TMPDIR/react-* && watchman watch-del-all && lsof -n -i4TCP:8081 | sed '1 d' | awk '{print $2}' | xargs kill -9",
-    "clean_node_modules": "rm -rf node_modules/ && yarn cache clean && yarn",
+    "clean_native_builds": "if exist ios\\build rmdir /s /q ios\\build && if exist android\\build rmdir /s /q android\\build",
+    "clean_react_native": "if exist %TMPDIR%\\react-* rmdir /s /q %TMPDIR%\\react-* && watchman watch-del-all && for /f \"tokens=5\" %a in ('netstat -ano ^| findstr :8081') do taskkill /F /PID %a",
+    "clean_node_modules": "if exist node_modules rmdir /s /q node_modules && yarn cache clean && yarn",
     "test": "jest",
-    "postinstall": "rm -rf node_modules/react-native-3d-model-view/node_modules node_modules/react-native-3d-model-view/example"
+    "postinstall": "if exist node_modules\\react-native-3d-model-view\\node_modules rmdir /s /q node_modules\\react-native-3d-model-view\\node_modules && if exist node_modules\\react-native-3d-model-view\\example rmdir /s /q node_modules\\react-native-3d-model-view\\example"
   },
   "dependencies": {
-    "react": "16.6.0-alpha.8af6728",
-    "react-native": "0.57.3",
-    "react-native-3d-model-view": "file:../",
-    "react-native-fs": "2.11.15",
-    "react-native-zip-archive": "2.2.6",
-    "react-navigation": "2.18.2",
-    "rn-fetch-blob": "0.10.13"
+    "react": "18.2.0",
+    "react-native": "0.72.7",
+    "react-native-3d-model-view": "file:..",
+    "react-native-fs": "2.20.0",
+    "react-native-zip-archive": "7.0.1",
+    "react-navigation": "5.0.0",
+    "rn-fetch-blob": "0.12.0"
   },
   "devDependencies": {
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "react-test-renderer": "16.6.0"
+    "@react-native/metro-config": "^0.79.2",
+    "babel-jest": "29.7.0",
+    "jest": "29.7.0",
+    "react-test-renderer": "18.2.0"
   },
   "jest": {
     "preset": "react-native"
